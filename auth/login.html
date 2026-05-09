@@ -22,6 +22,7 @@
     <script>
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
@@ -33,14 +34,19 @@
                 });
 
                 const data = await response.json();
-                if(response.ok && data.success) {
+
+                if (response.ok && data.success) {
+                    // Sauvegarde l'utilisateur dans le localStorage
                     Auth.setUser(data.user);
-                    window.location.href = '../index.html';
+                    
+                    // Redirection dynamique sécurisée (ex: /bookforyou/index.html sur GitHub Pages)
+                    window.location.href = APP_BASE + 'index.html';
                 } else {
-                    alert(data.error || "Erreur de connexion");
+                    alert(data.error || "Identifiants ou mot de passe incorrect.");
                 }
             } catch (err) {
-                alert("Erreur serveur : impossible de se connecter.");
+                console.error(err);
+                alert("Erreur serveur : impossible de se connecter à l'API.");
             }
         });
     </script>

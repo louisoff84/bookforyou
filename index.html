@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book For You - Accueil</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">📚 Book For You</a>
+        <div id="nav-right" class="nav-links">
+            </div>
+    </nav>
+
+    <header>
+        <h1>Laissez l'IA libérer votre écriture</h1>
+        <p>Le premier espace d'écriture créative alimenté par l'IA Groq pour des histoires impeccables.</p>
+    </header>
+
+    <main>
+        <section class="ideas-section">
+            <h3>💡 Générateur d'idées de livres</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Entrez un mot-clé ou un genre pour que l'IA vous propose un concept de livre.</p>
+            <div class="search-box">
+                <input type="text" id="topicInput" placeholder="Ex: Science-fiction temporelle, Cyberpunk, Romance médiévale...">
+                <button onclick="getIdeas()" class="btn-ia">Générer ✨</button>
+            </div>
+            <div id="ideasResult" class="ideas-grid"></div>
+        </section>
+
+        <section>
+            <h2>🔥 Livres les plus lus du mois</h2>
+            <div id="booksGrid" class="book-grid">
+                <p>Chargement des livres du moment...</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script>
+        // Init navigation au chargement
+        updateNavbar();
+
+        // Récupérer les livres populaires du mois depuis l'API
+        async function fetchTrendingBooks() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/books/get_trending.php`);
+                const books = await response.json();
+                
+                const grid = document.getElementById('booksGrid');
+                grid.innerHTML = '';
+
+                if(books.length === 0) {
+                    grid.innerHTML = '<p>Aucun livre n\'a encore été publié. Soyez le premier !</p>';
+                    return;
+                }
+
+                books.forEach(book => {
+                    grid.innerHTML += `
+                        <div class="book-card">
+                            <div class="cover">${book.title}</div>
+                            <h3>${book.title}</h3>
+                            <p>Par @${book.username}</p>
+                            <a href="books/view.html?id=${book.id}" class="btn">Lire</a>
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                console.error("Impossible de charger les livres", err);
+            }
+        }
+
+        // Générer des idées avec Groq
+        async function getIdeas() {
+            const topic = document.getElementById('topicInput').value;
+            const resDiv = document.getElementById('ideasResult');
+            if(!topic) return alert("Renseigne une thématique !");
+
+            resDiv.innerHTML = "<p>L'IA conçoit vos histoires idéales...</p>";
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/ideas.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ topic })
+                });
+                
+                const data = await response.json();
+                resDiv.innerHTML = "";
+
+                data.ideas.forEach(idea => {
+                    resDiv.innerHTML += `
+                        <div class="idea-card">
+                            <div>
+                                <span class="idea-genre">${idea.genre}</span>
+                                <h4>${idea.title}</h4>
+                                <p>${idea.summary}</p>
+                            </div>
+                            <button onclick="startBook('${idea.title.replace(/'/g, "\\'")}')" class="btn">Écrire ce livre</button>
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                resDiv.innerHTML = "<p>Impossible de joindre le générateur d'idées.</p>";
+            }
+        }
+
+        function startBook(title) {
+            localStorage.setItem('bfy_pending_title', title);
+            window.location.href = 'books/editor.html';
+        }
+
+        fetchTrendingBooks();
+    </script>
+</body>
+</html>

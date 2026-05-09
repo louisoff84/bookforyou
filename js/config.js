@@ -1,7 +1,10 @@
-// Remplace par l'URL de ton serveur de production quand tu déploieras ton API PHP
-const API_BASE_URL = 'http://localhost:8000'; 
+// URL de ton API PHP de production
+const API_BASE_URL = 'https://api.craftpick.fr/booksforyou'; 
 
-// Fonctions utilitaires globales
+// Détection automatique du dossier racine (indispensable pour GitHub Pages)
+const isGitHubPages = window.location.hostname.includes('github.io');
+const APP_BASE = isGitHubPages ? '/bookforyou/' : '/';
+
 const Auth = {
     getUser() {
         const user = localStorage.getItem('bfy_user');
@@ -12,17 +15,17 @@ const Auth = {
     },
     logout() {
         localStorage.removeItem('bfy_user');
-        window.location.href = '/';
+        window.location.href = APP_BASE + 'index.html';
     },
     checkAuth() {
         if (!this.getUser()) {
             alert("Vous devez être connecté pour accéder à cette page.");
-            window.location.href = '../auth/login.html';
+            window.location.href = APP_BASE + 'auth/login.html';
         }
     }
 };
 
-// Gère l'affichage dynamique de la barre de navigation
+// Gère la barre de navigation avec les bons liens dynamiques
 function updateNavbar() {
     const navRight = document.getElementById('nav-right');
     if (!navRight) return;
@@ -30,14 +33,14 @@ function updateNavbar() {
     const user = Auth.getUser();
     if (user) {
         navRight.innerHTML = `
-            <a href="/books/editor.html" class="nav-link">📝 Écrire</a>
+            <a href="${APP_BASE}books/editor.html" class="nav-link">📝 Écrire</a>
             <span class="user-badge">👋 ${user.username}</span>
             <button onclick="Auth.logout()" class="btn-secondary">Déconnexion</button>
         `;
     } else {
         navRight.innerHTML = `
-            <a href="/auth/login.html" class="nav-link">Connexion</a>
-            <a href="/auth/register.html" class="btn">S'inscrire</a>
+            <a href="${APP_BASE}auth/login.html" class="nav-link">Connexion</a>
+            <a href="${APP_BASE}auth/register.html" class="btn">S'inscrire</a>
         `;
     }
 }

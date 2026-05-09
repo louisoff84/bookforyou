@@ -1,0 +1,21 @@
+<div class="profile-header">
+    <img id="display-pp" src="default_pp.png" style="width:100px; height:100px; border-radius:50%;">
+    <input type="file" id="input-pp" accept="image/*">
+    <button onclick="uploadPP()">Changer ma photo</button>
+</div>
+
+<script>
+async function uploadPP() {
+    const fileInput = document.getElementById('input-pp');
+    const formData = new FormData();
+    formData.append('pp', fileInput.files[0]);
+    formData.append('user_id', 1); // ID de l'utilisateur connecté
+
+    const res = await fetch('https://api.craftpick.fr/booksforyou/api/upload_pp.php', {
+        method: 'POST',
+        body: formData
+    });
+    const data = await res.json();
+    if(data.success) location.reload();
+}
+</script>

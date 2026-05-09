@@ -1,83 +1,80 @@
-/* --- Mes Livres : Dashboard --- */
-.book-management-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-    margin-top: 30px;
+/* --- VARIABLES --- */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+
+:root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --accent: #f59e0b;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #0f172a;
+    --text-light: #64748b;
+    --border: #e2e8f0;
+    --radius: 16px;
+    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
-.manage-card {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+/* --- BASE --- */
+* { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.2s ease; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+/* --- NAVBAR --- */
+.navbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 15px 0; position: sticky; top: 0; z-index: 1000; }
+.nav-container { display: flex; justify-content: space-between; align-items: center; }
+.logo { font-size: 1.4rem; font-weight: 800; color: var(--primary); text-decoration: none; }
+.nav-links { display: flex; gap: 20px; align-items: center; }
+.nav-links a { text-decoration: none; color: var(--text-light); font-weight: 600; }
+.nav-links a:hover { color: var(--primary); }
+
+/* --- BOUTONS --- */
+.btn { padding: 10px 20px; border-radius: var(--radius); border: none; cursor: pointer; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; }
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
+.btn-logout { background: #fee2e2; color: #ef4444; }
+
+/* --- GRILLE & CARTES --- */
+.book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; padding: 40px 0; }
+.card { background: var(--card); border-radius: var(--radius); padding: 25px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+.book-card { cursor: pointer; position: relative; }
+.book-card:hover { border-color: var(--primary); transform: scale(1.02); }
+.book-meta { margin-top: 15px; border-top: 1px solid var(--border); padding-top: 10px; display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-light); }
+
+/* --- STATUTS --- */
+.status-badge { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; margin-bottom: 10px; display: inline-block; }
+.status-published { background: #dcfce7; color: #16a34a; }
+.status-draft { background: #fef3c7; color: #d97706; }
+
+/* --- ÉDITEUR --- */
+.editor-container { display: grid; grid-template-columns: 300px 1fr; gap: 30px; margin: 40px 0; }
+.title-input { font-size: 2.5rem; font-weight: 800; border: none; width: 100%; outline: none; color: var(--primary); background: transparent; }
+textarea { width: 100%; height: 500px; border: none; resize: none; font-size: 1.2rem; font-family: serif; line-height: 1.8; outline: none; }
+
+/* --- PROFIL --- */
+.profile-header { display: flex; align-items: center; gap: 30px; padding: 30px; background: white; border-radius: 24px; margin: 40px 0; border: 1px solid var(--border); }
+.pdp-container { position: relative; width: 120px; height: 120px; }
+.pdp-preview { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary); }
+.pdp-upload-btn { position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 3px solid white; }
+
+/* --- READER (LECTEUR) --- */
+.reader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; flex-direction: column; display: none; }
+.reader-header { padding: 20px 40px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.reader-body { flex: 1; overflow-y: auto; padding: 60px 20px; max-width: 800px; margin: 0 auto; font-size: 1.4rem; font-family: 'Georgia', serif; line-height: 2; color: #1e293b; }
+.page-animate { animation: fadeIn 0.4s ease-out; }
+
+/* --- AUTH --- */
+.auth-page { display: flex; align-items: center; justify-content: center; min-height: 80vh; }
+.auth-card { max-width: 400px; width: 100%; }
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; }
+input { width: 100%; padding: 14px; border: 1px solid var(--border); border-radius: 12px; font-size: 1rem; }
+input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* --- MOBILE --- */
+@media (max-width: 768px) {
+    .editor-container { grid-template-columns: 1fr; }
+    .profile-header { flex-direction: column; text-align: center; }
+    .nav-links span { display: none; }
 }
-
-.status-badge {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-}
-
-.status-draft { background: #fef3c7; color: #92400e; }
-.status-published { background: #d1fae5; color: #065f46; }
-
-.action-btns {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.btn-edit { background: #f3f4f6; color: #374151; flex: 1; text-align: center; }
-.btn-delete { background: #fee2e2; color: #b91c1c; flex: 1; }
-
-/* --- Système de Profil / PDP --- */
-.profile-header {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    margin-bottom: 40px;
-    padding: 30px;
-    background: white;
-    border-radius: var(--radius);
-    box-shadow: var(--card-shadow);
-}
-
-.pdp-container {
-    position: relative;
-    width: 120px;
-    height: 120px;
-}
-
-.pdp-preview {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 4px solid var(--accent-soft);
-}
-
-.pdp-upload-btn {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    background: var(--accent);
-    color: white;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: 3px solid white;
-}
-
-#pdp-input { display: none; }

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Éditeur - BooksForYou</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="editor.css"> </head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo">BooksForYou</a>
+        <div class="nav-links">
+            <a href="index.html">Accueil</a>
+            <a href="mes-livres.html">Mes Livres</a>
+            <button onclick="logout()" class="btn-logout">Déconnexion</button>
+        </div>
+    </nav>
+
+    <div class="editor-container">
+        <div class="toolbar card">
+            <input type="text" id="gdoc-url" placeholder="Lien Google Docs (Public)">
+            <button onclick="importGDoc()" class="btn-import">Importer</button>
+        </div>
+
+        <div class="card main-editor">
+            <input type="text" id="title" class="editor-title" placeholder="Titre de votre œuvre...">
+            <hr>
+            <textarea id="content" class="editor-textarea" placeholder="Il était une fois..."></textarea>
+            
+            <div class="editor-footer">
+                <span id="char-count">0 caractères</span>
+                <button onclick="saveDraft()" class="btn-save">Enregistrer en Brouillon</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script> <script src="editor.js"></script> </body>
+</html>

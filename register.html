@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Inscription - BooksForYou</title>
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+
+    <div class="auth-card">
+        <h2>Créer un compte</h2>
+        <div id="error-box" class="error-message"></div>
+        
+        <div class="auth-group">
+            <label>Nom d'utilisateur</label>
+            <input type="text" id="reg-username" placeholder="Ex: VictorHugo84">
+        </div>
+
+        <div class="auth-group">
+            <label>Email</label>
+            <input type="email" id="reg-email" placeholder="votre@email.com">
+        </div>
+
+        <div class="auth-group">
+            <label>Mot de passe</label>
+            <input type="password" id="reg-pass" placeholder="••••••••">
+        </div>
+
+        <button onclick="handleRegister()" class="btn-auth">S'inscrire</button>
+
+        <div class="auth-footer">
+            Déjà inscrit ? <a href="login.html">Se connecter</a>
+        </div>
+    </div>
+
+    <script>
+        const API = "https://api.craftpick.fr/booksforyou";
+
+        async function handleRegister() {
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-pass').value;
+            const errorBox = document.getElementById('error-box');
+
+            if(!username || !email || !password) {
+                errorBox.innerText = "Tous les champs sont obligatoires.";
+                errorBox.style.display = "block";
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API}/auth/register.php`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    alert("Compte créé ! Connectez-vous.");
+                    window.location.href = "login.html";
+                } else {
+                    errorBox.innerText = data.error;
+                    errorBox.style.display = "block";
+                }
+            } catch (e) {
+                errorBox.innerText = "Erreur serveur.";
+                errorBox.style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>

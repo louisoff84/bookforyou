@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mes Livres - BooksForYou</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #e67e22; --success: #27ae60; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f9f9f9; margin: 0; display: flex; }
+        
+        /* Sidebar simple */
+        nav { width: 200px; background: var(--primary); height: 100vh; color: white; padding: 20px; position: fixed; }
+        nav a { color: white; display: block; padding: 10px 0; text-decoration: none; }
+
+        main { margin-left: 240px; padding: 40px; width: 100%; }
+        .section-title { border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-top: 40px; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+        
+        .book-card { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: relative; }
+        .book-card h3 { margin-top: 0; color: var(--primary); }
+        .status-badge { font-size: 0.8rem; padding: 3px 8px; border-radius: 4px; float: right; }
+        .badge-draft { background: #fff3cd; color: #856404; }
+        .badge-published { background: #d4edda; color: #155724; }
+        
+        .actions { margin-top: 15px; display: flex; gap: 10px; }
+        button { cursor: pointer; border: none; padding: 8px 12px; border-radius: 4px; font-weight: bold; }
+        .btn-view { background: #eee; }
+        .btn-publish { background: var(--success); color: white; }
+        
+        /* Modal de prévisualisation */
+        #preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; }
+        .modal-content { background: white; width: 80%; max-width: 700px; margin: 50px auto; padding: 30px; border-radius: 8px; max-height: 80vh; overflow-y: auto; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <h2>BooksForYou</h2>
+    <a href="index.html">Accueil</a>
+    <a href="ecrire.html">Nouvel Ouvrage</a>
+    <a href="profil.html">Mon Profil</a>
+</nav>
+
+<main>
+    <h1>Gestion de mes manuscrits</h1>
+
+    <h2 class="section-title">En cours (Brouillons)</h2>
+    <div id="list-drafts" class="grid">
+        </div>
+
+    <h2 class="section-title">Mes publications</h2>
+    <div id="list-published" class="grid">
+        </div>
+</main>
+
+<div id="preview-modal">
+    <div class="modal-content">
+        <h2 id="preview-title"></h2>
+        <hr>
+        <p id="preview-body" style="white-space: pre-wrap; line-height: 1.6;"></p>
+        <button onclick="closePreview()">Fermer</button>
+    </div>
+</div>
+
+<script>
+    const API = "https://api.craftpick.fr/booksforyou";
+    const USER_ID = 1; // À remplacer par l'ID de session réel
+
+    // 1. Charger les données au démarrage
+    async function fetchMyBooks() {
+        try {
+            // Charger les brouillons
+            const resDraft = await fetch(`${API}/api/books.php?user_id=${USER_ID}&status=draft`);
+            const drafts = await resDraft.json();
+            renderBooks(drafts, 'list-drafts', true);
+
+            // Charger les publiés
+            const resPub = await fetch(`${API}/api/books.php?user_id=${USER_ID}&status=published`);
+            const published = await resPub.json();
+            renderBooks(published, 'list-published', false);
+        } catch (e) {
+            console.error("Erreur de chargement", e);
+        }
+    }
+
+    // 2. Affichage des cartes
+    function renderBooks(books, elementId, isDraft) {
+        const container = document.getElementById(elementId);
+        container.innerHTML = books.length ? '' : '<p>Aucun livre ici.</p>';
+        
+        books.forEach(book => {
+            const card = document.createElement('div');
+            card.className = 'book-card';
+            card.innerHTML = `
+                <span class="status-badge ${isDraft ? 'badge-draft' : 'badge-published'}">
+                    ${isDraft ? 'Brouillon' : 'Publié'}
+                </span>
+                <h3>${book.title}</h3>
+                <p>${book.content.substring(0, 80)}...</p>
+                <div class="actions">
+                    <button class="btn-view" onclick='openPreview(${JSON.stringify(book).replace(/'/g, "&apos;")})'>Regarder</button>
+                    ${isDraft ? `<button class="btn-publish" onclick="publishNow(${book.id})">Publier</button>` : ''}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // 3. Action de publication
+    async function publishNow(id) {
+        if(!confirm("Voulez-vous rendre ce livre public ?")) return;
+
+        const res = await fetch(`${API}/api/books.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'publish', id: id })
+        });
+
+        const data = await res.json();
+        if(data.success) {
+            alert("Livre publié !");
+            fetchMyBooks(); // Recharger les listes
+        }
+    }
+
+    // 4. Fonctions de la Modal
+    function openPreview(book) {
+        document.getElementById('preview-title').innerText = book.title;
+        document.getElementById('preview-body').innerText = book.content;
+        document.getElementById('preview-modal').style.display = 'block';
+    }
+
+    function closePreview() {
+        document.getElementById('preview-modal').style.display = 'none';
+    }
+
+    // Init
+    fetchMyBooks();
+</script>
+
+</body>
+</html>

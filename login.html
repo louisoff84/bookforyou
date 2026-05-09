@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion - BooksForYou</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card" style="max-width: 400px; margin: 100px auto;">
+            <h2>Connexion</h2>
+            <input type="email" id="login-email" placeholder="Email">
+            <input type="password" id="login-pass" placeholder="Mot de passe">
+            <button onclick="handleLogin()" style="width: 100%;">Se connecter</button>
+            <p>Pas de compte ? <a href="register.html">S'inscrire</a></p>
+        </div>
+    </div>
+
+    <script>
+        const API = "https://api.craftpick.fr/booksforyou";
+
+        async function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-pass').value;
+
+            const res = await fetch(`${API}/auth/login.php`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                // SAUVEGARDE DE LA SESSION (Local Storage)
+                localStorage.setItem('user', JSON.stringify(data.user));
+                window.location.href = "index.html"; // Redirection
+            } else {
+                alert(data.error);
+            }
+        }
+    </script>
+</body>
+</html>

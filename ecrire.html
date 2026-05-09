@@ -2,61 +2,45 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Nouvelle Histoire - BooksForYou</title>
+    <title>Éditeur Pro - BooksForYou</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .editor-wrapper { display: grid; grid-template-columns: 1fr 300px; gap: 20px; margin-top: 30px; }
-        .editor-main { min-height: 70vh; }
-        .title-input { 
-            font-size: 2.5rem; font-weight: 800; border: none; 
-            width: 100%; margin-bottom: 20px; color: var(--primary);
-        }
-        .title-input:focus { outline: none; }
-        textarea { 
-            width: 100%; height: 500px; border: none; resize: none;
-            font-size: 1.15rem; font-family: 'Georgia', serif; line-height: 1.8;
-        }
-        textarea:focus { outline: none; }
-        .sidebar-box { position: sticky; top: 100px; }
-        .stats { font-size: 0.85rem; color: var(--text-muted); margin-top: 15px; }
-    </style>
 </head>
-<body>
+<body class="editor-page">
+
     <nav class="navbar">
         <div class="nav-container container">
             <a href="index.html" class="logo">BooksForYou</a>
             <div class="nav-links">
-                <a href="index.html">Accueil</a>
-                <a href="mes-livres.html">Ma Bibliothèque</a>
-                <button onclick="logout()" class="btn">Déconnexion</button>
+                <a href="profil.html">Mon Profil</a>
+                <button onclick="logout()" class="btn-logout">Quitter</button>
             </div>
         </div>
     </nav>
 
-    <main class="container">
-        <div class="editor-wrapper">
-            <div class="card editor-main">
-                <input type="text" id="title" class="title-input" placeholder="Titre de votre livre...">
-                <textarea id="content" placeholder="Commencez votre récit ici..."></textarea>
+    <main class="container editor-layout">
+        <aside class="editor-sidebar">
+            <div class="card tool-box">
+                <h3>Outils d'écriture</h3>
+                <div class="form-group">
+                    <label>Import Google Doc</label>
+                    <input type="text" id="gdoc-url" placeholder="Lien de partage public">
+                    <button onclick="importGDoc()" class="btn btn-primary w-100">Importer</button>
+                </div>
+                <hr>
+                <div class="stats-box">
+                    <span id="char-count">0</span> caractères
+                    <br>
+                    <span id="page-count">1</span> page(s) détectée(s)
+                </div>
+                <button onclick="saveBook()" class="btn btn-save w-100">🚀 Publier / Enregistrer</button>
             </div>
+        </aside>
 
-            <div class="sidebar-box">
-                <div class="card" style="margin-bottom: 20px;">
-                    <h3>Actions</h3>
-                    <button onclick="saveDraft()" class="btn btn-primary" style="width:100%; margin: 15px 0;">💾 Enregistrer</button>
-                    <button onclick="previewLocal()" class="btn" style="width:100%; background: #f1f5f9;">👁️ Aperçu</button>
-                </div>
-                
-                <div class="card">
-                    <h3>Import GDoc</h3>
-                    <p style="font-size: 0.8rem; margin: 10px 0;">Collez le lien public de votre document Google.</p>
-                    <input type="text" id="gdoc-url" placeholder="Lien /edit..." style="margin-bottom:10px;">
-                    <button onclick="importGDoc()" class="btn" style="width:100%; background: #eef2ff; color: var(--primary);">Importer</button>
-                </div>
-                
-                <div class="stats" id="char-count">0 caractères</div>
-            </div>
-        </div>
+        <section class="editor-main">
+            <input type="text" id="title" class="title-input" placeholder="Titre de votre œuvre...">
+            <textarea id="content" placeholder="Écrivez votre histoire ici... 
+Utilisez '---' sur une nouvelle ligne pour créer un nouveau chapitre."></textarea>
+        </section>
     </main>
 
     <script src="app.js"></script>

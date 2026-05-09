@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Éditeur - Book For You</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+    <nav>
+        <a href="../index.html" class="logo">📚 Book For You</a>
+        <div>
+            <a href="../index.html" class="btn-secondary">Accueil</a>
+        </div>
+    </nav>
+
+    <div class="editor-layout">
+        <input type="text" id="book-title" placeholder="Titre de votre livre...">
+        <textarea id="editor" placeholder="Il était une fois..."></textarea>
+        
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <button onclick="improveStyle()" class="btn-ia">✨ Améliorer le Style (Groq)</button>
+            </div>
+            <div class="toolbar-right">
+                <button onclick="saveDraft()" class="btn">Enregistrer</button>
+            </div>
+        </div>
+        <p id="status-msg" style="margin-top: 1rem; font-weight: bold; color: var(--text-muted);"></p>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script>
+        // Protéger la page : doit être connecté
+        Auth.checkAuth();
+
+        // Récupérer le titre si généré depuis l'IA de l'accueil
+        window.onload = () => {
+            const pendingTitle = localStorage.getItem('bfy_pending_title');
+            if(pendingTitle) {
+                document.getElementById('book-title').value = pendingTitle;
+                localStorage.removeItem('bfy_pending_title');
+            }
+        };
+
+        // Fonction d'amélioration du texte avec l'IA Groq (appelle ton API PHP)
+        async function improveStyle() {
+            const text = document.getElementById('editor').value;
+            const statusMsg = document.getElementById('status-msg');
+            if(!text.trim()) return alert("Écris un paragraphe d'abord !");
+
+            statusMsg.innerText = "L'IA analyse et reformule votre texte...";
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/improve.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+
+                const data = await response.json();
+                if(response.ok) {
+                    document.getElementById('editor').value = data.improvedText;
+                    statusMsg.innerText = "Texte amélioré avec succès !";
+                } else {
+                    statusMsg.innerText = "Erreur de l'IA.";
+                }
+            } catch (err) {
+                statusMsg.innerText = "Impossible de joindre le serveur de correction.";
+            }
+        }
+
+        // Enregistrement du brouillon
+        async function saveDraft() {
+            const user = Auth.getUser();
+            const title = document.getElementById('book-title').value;
+            const content = document.getElementById('editor').value;
+            const statusMsg = document.getElementById('status-msg');
+
+            if(!title) return alert("Veuillez donner un titre à votre livre.");
+
+            statusMsg.innerText = "Sauvegarde en cours...";
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/books/save.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: user.id, title, content })
+                });
+
+                const data = await response.json();
+                if(response.ok) {
+                    statusMsg.innerText = "Brouillon sauvegardé !";
+                } else {
+                    statusMsg.innerText = "Erreur lors de la sauvegarde.";
+                }
+            } catch (err) {
+                statusMsg.innerText = "Impossible de sauvegarder sur le serveur.";
+            }
+        }
+    </script>
+</body>
+</html>

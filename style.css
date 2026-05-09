@@ -1,143 +1,60 @@
-/* --- Variables & Reset --- */
 :root {
-    --primary: #2c3e50;
-    --accent: #e67e22;
-    --bg: #f4f7f6;
-    --text: #333;
-    --white: #ffffff;
-    --shadow: 0 4px 12px rgba(0,0,0,0.08);
+    --primary: #4f46e5;      /* Indigo moderne */
+    --primary-hover: #4338ca;
+    --accent: #f59e0b;       /* Ambre pour les actions */
+    --bg-app: #f8fafc;
+    --card-bg: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --danger: #ef4444;
+    --success: #10b981;
+    --radius: 12px;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-    font-family: 'Inter', -apple-system, sans-serif;
-    background-color: var(--bg);
-    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: var(--bg-app);
+    color: var(--text-main);
     line-height: 1.6;
 }
 
-/* --- Navigation --- */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+/* Navbar Moderne */
 .navbar {
-    background: var(--primary);
-    color: white;
+    background: var(--card-bg);
+    border-bottom: 1px solid #e2e8f0;
     padding: 1rem 0;
     position: sticky;
-    top: 0;
-    z-index: 1000;
+    top: 0; z-index: 1000;
 }
 
-.nav-container {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
+.nav-container { display: flex; justify-content: space-between; align-items: center; }
+
+.logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); text-decoration: none; }
+
+.nav-links { display: flex; gap: 24px; align-items: center; }
+
+.nav-links a { 
+    text-decoration: none; color: var(--text-muted); 
+    font-weight: 500; transition: 0.2s; 
 }
 
-.logo { font-size: 1.5rem; font-weight: bold; text-decoration: none; color: white; }
+.nav-links a:hover { color: var(--primary); }
 
-.nav-links { display: flex; align-items: center; gap: 20px; }
-
-.nav-links a {
-    color: rgba(255,255,255,0.8);
-    text-decoration: none;
-    transition: 0.3s;
+.btn {
+    padding: 10px 20px; border-radius: var(--radius);
+    border: none; cursor: pointer; font-weight: 600;
+    transition: 0.3s; text-decoration: none; display: inline-block;
 }
 
-.nav-links a:hover, .nav-links a.active { color: white; }
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
 
-.btn-write {
-    background: var(--accent);
-    color: white !important;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-weight: bold;
+.card {
+    background: var(--card-bg); border-radius: var(--radius);
+    padding: 24px; box-shadow: var(--shadow); border: 1px solid #f1f5f9;
 }
-
-.btn-logout {
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.3);
-    color: white;
-    padding: 5px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-/* --- Hero Section --- */
-.hero {
-    background: white;
-    text-align: center;
-    padding: 60px 20px;
-    border-bottom: 1px solid #eee;
-}
-
-.hero h1 { font-size: 2.5rem; color: var(--primary); margin-bottom: 10px; }
-.hero p { color: #666; font-size: 1.1rem; }
-
-/* --- Conteneur Principal --- */
-.container {
-    max-width: 1100px;
-    margin: 40px auto;
-    padding: 0 20px;
-}
-
-.feed-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-}
-
-/* --- Grille de Livres --- */
-.book-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 25px;
-}
-
-.book-card {
-    background: var(--white);
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: var(--shadow);
-    transition: transform 0.3s ease;
-    display: flex;
-    flex-direction: column;
-}
-
-.book-card:hover {
-    transform: translateY(-5px);
-}
-
-.book-card h3 {
-    font-size: 1.3rem;
-    color: var(--primary);
-    margin-bottom: 10px;
-}
-
-.book-card p {
-    color: #555;
-    font-size: 0.95rem;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 4; /* Coupe le texte après 4 lignes */
-    -webkit-box-orient: vertical;
-    margin-bottom: 20px;
-}
-
-.book-meta {
-    margin-top: auto;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
-    font-size: 0.85rem;
-    color: #888;
-    display: flex;
-    justify-content: space-between;
-}
-
-.author-name { color: var(--accent); font-weight: bold; }
-
-/* --- Utilitaires --- */
-.loading { text-align: center; grid-column: 1 / -1; padding: 50px; color: #888; }

@@ -1,4 +1,8 @@
 // Récupérer l'utilisateur stocké dans le navigateur
+const API = "https://api.craftpick.fr/booksforyou"; // <--- Doit être ici, tout en haut !
+
+const userData = JSON.parse(localStorage.getItem('user'));
+const USER_ID = userData ? userData.id : null;
 const userData = JSON.parse(localStorage.getItem('user'));
 
 // Si pas d'utilisateur et qu'on n'est pas sur la page de login, on redirige

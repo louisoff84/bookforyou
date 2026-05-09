@@ -1,60 +1,116 @@
+/* style.css complet */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+
 :root {
-    --primary: #4f46e5;      /* Indigo moderne */
-    --primary-hover: #4338ca;
-    --accent: #f59e0b;       /* Ambre pour les actions */
-    --bg-app: #f8fafc;
-    --card-bg: #ffffff;
-    --text-main: #1e293b;
-    --text-muted: #64748b;
-    --danger: #ef4444;
-    --success: #10b981;
-    --radius: 12px;
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --glass: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --accent: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    --bg-dark: #0f172a;
+    --text-bright: #f8fafc;
+    --text-dim: #94a3b8;
+    --shadow-pro: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { 
+    box-sizing: border-box; 
+    margin: 0; padding: 0; 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
 body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background-color: var(--bg-app);
-    color: var(--text-main);
-    line-height: 1.6;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+    color: var(--text-bright);
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
-.container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-
-/* Navbar Moderne */
+/* --- NAVIGATION GLASS --- */
 .navbar {
-    background: var(--card-bg);
-    border-bottom: 1px solid #e2e8f0;
-    padding: 1rem 0;
-    position: sticky;
-    top: 0; z-index: 1000;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 1.2rem 0;
+    position: sticky; top: 0; z-index: 1000;
 }
 
-.nav-container { display: flex; justify-content: space-between; align-items: center; }
-
-.logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); text-decoration: none; }
-
-.nav-links { display: flex; gap: 24px; align-items: center; }
-
-.nav-links a { 
-    text-decoration: none; color: var(--text-muted); 
-    font-weight: 500; transition: 0.2s; 
+.nav-container {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 30px;
 }
 
-.nav-links a:hover { color: var(--primary); }
+.logo {
+    font-size: 1.6rem; font-weight: 800;
+    background: var(--accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -1px;
+}
 
+.nav-links a {
+    color: var(--text-dim); text-decoration: none;
+    font-weight: 600; font-size: 0.95rem; margin-left: 30px;
+}
+
+.nav-links a:hover { color: #fff; text-shadow: 0 0 10px rgba(168, 85, 247, 0.5); }
+
+/* --- BOUTONS FUTURISTES --- */
 .btn {
-    padding: 10px 20px; border-radius: var(--radius);
-    border: none; cursor: pointer; font-weight: 600;
-    transition: 0.3s; text-decoration: none; display: inline-block;
+    padding: 12px 25px; border-radius: 14px;
+    border: none; cursor: pointer; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 8px;
 }
 
-.btn-primary { background: var(--primary); color: white; }
-.btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+.btn-primary {
+    background: var(--accent); color: white;
+    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+}
 
+.btn-primary:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(99, 102, 241, 0.5);
+}
+
+/* --- CARDS GLASSMORPHISM --- */
 .card {
-    background: var(--card-bg); border-radius: var(--radius);
-    padding: 24px; box-shadow: var(--shadow); border: 1px solid #f1f5f9;
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: var(--shadow-pro);
 }
+
+.book-card {
+    position: relative; overflow: hidden;
+}
+
+.book-card::before {
+    content: ''; position: absolute; top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+    transition: 0.5s;
+}
+
+.book-card:hover::before { left: 100%; }
+
+.book-card h3 { font-size: 1.4rem; margin-bottom: 12px; font-weight: 700; }
+.book-card p { color: var(--text-dim); font-size: 1rem; line-height: 1.7; }
+
+/* --- GRID SYSTEM --- */
+.container { max-width: 1200px; margin: 40px auto; padding: 0 30px; }
+
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+/* --- ANIMATION DE CHARGEMENT --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.book-card { animation: fadeIn 0.6s ease forwards; }

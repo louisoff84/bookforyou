@@ -1,0 +1,46 @@
+/* editor.css */
+.editor-container {
+    max-width: 900px;
+    margin: 30px auto;
+}
+
+.editor-title {
+    border: none !important;
+    font-size: 2rem !important;
+    font-weight: bold;
+    padding: 10px 0 !important;
+    margin-bottom: 10px;
+}
+
+.editor-textarea {
+    border: none !important;
+    min-height: 500px;
+    font-family: 'Georgia', serif; /* Plus agréable pour lire/écrire */
+    font-size: 1.2rem;
+    line-height: 1.8;
+    background: transparent;
+}
+
+.editor-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.btn-save {
+    background-color: var(--success);
+    font-size: 1.1rem;
+    padding: 15px 30px;
+}
+
+.toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding: 15px !important;
+}
+
+.toolbar input { margin: 0; }

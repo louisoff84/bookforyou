@@ -1,110 +1,43 @@
-/**
- * APP.JS - Configuration Globale et Gestion de Session
- * Ce fichier doit être chargé AVANT tous les autres scripts (editor.js, etc.)
- */
-
-// 1. CONFIGURATION API
-// Remplace bien par l'URL exacte de ton dossier sur Craftpick
 const API = "https://api.craftpick.fr/booksforyou";
-
-// 2. GESTION DE LA SESSION
-// On récupère les données de l'utilisateur stockées lors du login
 const userData = JSON.parse(localStorage.getItem('user'));
-
-// Variables globales accessibles partout
 const USER_ID = userData ? userData.id : null;
-const USERNAME = userData ? userData.username : "Invité";
 
-/**
- * Initialisation au chargement de la page
- */
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("🚀 App initialisée pour :", USERNAME);
-    
-    // Mise à jour de l'interface selon la connexion
-    updateUI();
-
-    // Si on est sur l'index, on charge le flux
-    if (document.getElementById('feed')) {
-        loadFeed();
-    }
+    if (document.getElementById('feed')) loadFeed();
 });
 
-/**
- * Met à jour les éléments visuels selon si l'utilisateur est connecté ou non
- */
-function updateUI() {
-    const navUsername = document.getElementById('nav-username');
-    if (navUsername) {
-        navUsername.innerText = USER_ID ? `Profil (${USERNAME})` : "Connexion";
-    }
-
-    // Protection des pages privées (ex: l'éditeur)
-    const isEditorPage = window.location.pathname.includes('ecrire.html') || 
-                         window.location.pathname.includes('mes-livres.html');
-    
-    if (isEditorPage && !USER_ID) {
-        alert("Vous devez être connecté pour accéder à cette page.");
-        window.location.href = "login.html";
-    }
-}
-
-/**
- * CHARGER LE FLUX PUBLIC (Accueil)
- */
+// Charge les livres sur l'accueil
 async function loadFeed() {
-    const feedContainer = document.getElementById('feed');
-    if (!feedContainer) return;
-
+    const feed = document.getElementById('feed');
     try {
-        const res = await fetch(`${API}/api/books.php?status=published`);
-        
-        if (!res.ok) throw new Error("Erreur de réponse serveur");
-        
+        const res = await fetch(`${API}/api/books.php`);
         const books = await res.json();
-        
-        if (books.length === 0) {
-            feedContainer.innerHTML = '<div class="loading">Aucune histoire publiée pour le moment.</div>';
-            return;
-        }
-
-        let html = '';
-        books.forEach(b => {
-            html += `
-                <div class="card book-card">
-                    <h3>${escapeHtml(b.title)}</h3>
-                    <p>${escapeHtml(b.content).substring(0, 150)}...</p>
-                    <div class="book-meta">
-                        <span>Par <strong class="author-name">${escapeHtml(b.username)}</strong></span>
-                        <span>📅 ${new Date(b.created_at).toLocaleDateString()}</span>
-                    </div>
-                </div>`;
-        });
-        
-        feedContainer.innerHTML = html;
-
-    } catch (err) {
-        console.error("Erreur Feed:", err);
-        feedContainer.innerHTML = `<div class="card" style="color:red">Impossible de charger les livres. Vérifiez la connexion BDD.</div>`;
-    }
+        feed.innerHTML = books.map(b => `
+            <div class="card book-card" onclick="openReader(${b.id}, '${b.title.replace(/'/g, "\\")}')">
+                <h3>${b.title}</h3>
+                <p>${b.content ? b.content.substring(0, 100) : 'Cliquez pour lire...'}...</p>
+                <div class="book-meta">Par <b>${b.username}</b></div>
+            </div>
+        `).join('');
+    } catch (e) { feed.innerHTML = "Erreur de chargement."; }
 }
 
-/**
- * DÉCONNEXION
- */
-function logout() {
-    if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
-        localStorage.removeItem('user');
-        window.location.href = "login.html";
-    }
+// Système de lecture de pages
+let bookPages = [];
+async function openReader(bookId, title) {
+    const res = await fetch(`${API}/api/get_pages.php?book_id=${bookId}`);
+    bookPages = await res.json();
+    
+    document.getElementById('reader-title').innerText = title;
+    const selector = document.getElementById('page-selector');
+    selector.innerHTML = bookPages.map((p, i) => `<option value="${i}">Chapitre ${i+1}</option>`).join('');
+    
+    showPage(0);
+    document.getElementById('reader-overlay').style.display = 'flex';
 }
 
-/**
- * UTILITAIRE : Sécuriser l'affichage du texte (Anti-XSS)
- */
-function escapeHtml(text) {
-    if (!text) return "";
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+function showPage(index) {
+    document.getElementById('reader-content').innerHTML = bookPages[index].content.replace(/\n/g, '<br>');
 }
+
+function closeReader() { document.getElementById('reader-overlay').style.display = 'none'; }

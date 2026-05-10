@@ -2,180 +2,46 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book For You | Explorez l'imaginaire</title>
+    <title>Book For You | Accueil</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Outfit', sans-serif; background: #0b0e14; color: white; overflow-x: hidden; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
-        .view { display: none; animation: fadeIn 0.4s ease-out; }
-        .view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .btn-primary { background: linear-gradient(90deg, #6366f1, #a855f7); transition: 0.3s; }
-        .btn-primary:hover { transform: scale(1.02); shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Outfit', sans-serif; background: #0b0e14; color: white; }</style>
 </head>
-<body>
-
-    <nav class="glass sticky top-0 z-50 p-4 border-b border-white/5">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-black italic tracking-tighter cursor-pointer" onclick="showView('home')">
-                <span class="text-indigo-500">BOOK</span> FOR YOU
-            </h1>
-            <div class="flex gap-6 items-center">
-                <button onclick="showView('home')" class="hover:text-indigo-400 transition">Accueil</button>
-                <button onclick="showView('write')" class="hover:text-indigo-400 transition">Écrire</button>
-                <div id="user-menu" class="flex gap-3">
-                    </div>
+<body class="p-6">
+    <nav class="max-w-7xl mx-auto flex justify-between items-center mb-12">
+        <h1 class="text-3xl font-black text-indigo-500">BOOK FOR YOU</h1>
+        <div class="flex gap-6 items-center" id="nav-links">
+            <a href="books/editor.html" class="hover:text-indigo-400">Écrire</a>
             </div>
-        </div>
     </nav>
 
-    <section id="view-home" class="view active max-w-7xl mx-auto p-8">
-        <div class="mb-12 text-center">
-            <h2 class="text-5xl font-extrabold mb-4">Découvrez votre prochaine <span class="text-indigo-500">obsession</span>.</h2>
-            <p class="text-gray-400">Des milliers d'histoires écrites par la communauté.</p>
-        </div>
-        <div id="book-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            </div>
-    </section>
-
-    <section id="view-read" class="view max-w-4xl mx-auto p-8">
-        <button onclick="showView('home')" class="text-indigo-400 mb-6 flex items-center">← Retour à la bibliothèque</button>
-        <div id="read-content" class="glass p-10 rounded-3xl">
-            </div>
-    </section>
-
-    <section id="view-write" class="view max-w-5xl mx-auto p-8">
-        <div class="glass p-8 rounded-3xl border-l-8 border-indigo-500">
-            <h2 class="text-3xl font-bold mb-6">Publier une oeuvre</h2>
-            <input id="w-title" type="text" placeholder="Titre incroyable..." class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-4 focus:border-indigo-500 outline-none">
-            
-            <div class="flex gap-4 mb-4">
-                <label class="flex-1 cursor-pointer bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition">
-                    📁 Importer .docx
-                    <input type="file" id="import-docx" class="hidden" accept=".docx">
-                </label>
-                <button onclick="fixAI()" id="ai-btn" class="flex-1 bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 rounded-xl font-bold">✨ Correction IA Groq</button>
-            </div>
-
-            <textarea id="w-content" rows="15" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-6 outline-none focus:border-indigo-500" placeholder="Il était une fois..."></textarea>
-            <button onclick="publish()" class="w-full btn-primary p-4 rounded-xl font-bold text-lg">METTRE EN LIGNE</button>
-        </div>
-    </section>
-
-    <section id="view-login" class="view max-w-md mx-auto p-8 mt-20">
-        <div class="glass p-8 rounded-3xl text-center">
-            <h2 class="text-2xl font-bold mb-6">Rejoindre l'aventure</h2>
-            <input id="l-user" type="text" placeholder="Nom d'utilisateur" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-4 outline-none">
-            <input id="l-pass" type="password" placeholder="Mot de passe" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-6 outline-none">
-            <button onclick="login()" class="w-full btn-primary p-4 rounded-xl font-bold mb-4">Se connecter</button>
-            <button onclick="register()" class="text-gray-400 text-sm underline">Créer un compte</button>
-        </div>
-    </section>
+    <main class="max-w-7xl mx-auto">
+        <h2 class="text-4xl font-bold mb-8 text-center">Découvrir des histoires</h2>
+        <div id="book-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+    </main>
 
     <script>
         const API = "https://api.craftpick.fr/booksforyou/api.php";
-
-        // GESTIONNAIRE DE VUES
-        function showView(viewName) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-' + viewName).classList.add('active');
-            window.scrollTo(0,0);
-            if(viewName === 'home') loadBooks();
-        }
-
-        // AUTHENTIFICATION
-        async function login() {
-            const user = document.getElementById('l-user').value;
-            const pass = document.getElementById('l-pass').value;
-            const r = await fetch(`${API}?action=login`, {
-                method: 'POST',
-                body: JSON.stringify({username: user, password: pass})
-            });
-            if(r.ok) {
-                const data = await r.json();
-                localStorage.setItem('user', JSON.stringify(data));
-                updateNav();
-                showView('home');
-            } else { alert("Erreur de connexion"); }
-        }
-
-        function updateNav() {
-            const user = JSON.parse(localStorage.getItem('user'));
-            const menu = document.getElementById('user-menu');
-            if(user) {
-                menu.innerHTML = `<span class="text-indigo-400">@${atob(user.token)}</span>
-                                  <button onclick="logout()" class="text-xs opacity-50">Déconnexion</button>`;
-            } else {
-                menu.innerHTML = `<button onclick="showView('login')" class="btn-primary px-4 py-2 rounded-lg">Connexion</button>`;
-            }
-        }
-
-        function logout() { localStorage.clear(); location.reload(); }
-
-        // LIVRES
+        
         async function loadBooks() {
             const r = await fetch(`${API}?action=get_books`);
             const books = await r.json();
             document.getElementById('book-grid').innerHTML = books.map(b => `
-                <div class="glass p-6 rounded-3xl hover:border-indigo-500/50 transition cursor-pointer group" onclick="readBook(${b.id})">
-                    <div class="h-48 bg-gradient-to-br from-indigo-900/40 to-purple-900/40 rounded-2xl mb-4 flex items-center justify-center group-hover:scale-105 transition">
-                         <span class="text-4xl">📖</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-1">${b.title}</h3>
-                    <p class="text-gray-500 text-sm mb-3 text-indigo-300">Par ${b.author_name}</p>
-                    <p class="text-gray-400 text-sm line-clamp-3">${b.content}</p>
+                <div class="bg-white/5 p-6 rounded-3xl border border-white/10 hover:border-indigo-500 transition">
+                    <h3 class="text-xl font-bold">${b.title}</h3>
+                    <p class="text-indigo-400 text-sm mb-4 italic">Par ${b.author_name}</p>
+                    <p class="text-gray-400 line-clamp-3">${b.content}</p>
                 </div>
             `).join('');
         }
 
-        async function readBook(id) {
-            const r = await fetch(`${API}?action=get_books`);
-            const books = await r.json();
-            const book = books.find(b => b.id == id);
-            document.getElementById('read-content').innerHTML = `
-                <h1 class="text-4xl font-black mb-2">${book.title}</h1>
-                <p class="text-indigo-400 mb-8">Écrit par ${book.author_name}</p>
-                <div class="text-lg leading-relaxed text-gray-300 whitespace-pre-wrap">${book.content}</div>
-            `;
-            showView('read');
+        const user = localStorage.getItem('user');
+        const nav = document.getElementById('nav-links');
+        if(user) {
+            nav.innerHTML += `<a href="auth/logout.html" class="bg-white/10 px-4 py-2 rounded-lg">Déconnexion</a>`;
+        } else {
+            nav.innerHTML += `<a href="auth/login.html" class="bg-indigo-600 px-4 py-2 rounded-lg">Connexion</a>`;
         }
-
-        // ÉCRITURE & IA
-        async function publish() {
-            const user = JSON.parse(localStorage.getItem('user'));
-            if(!user) return showView('login');
-            
-            const payload = {
-                title: document.getElementById('w-title').value,
-                content: document.getElementById('w-content').value,
-                author: atob(user.token),
-                user_id: user.user_id
-            };
-            await fetch(`${API}?action=publish`, { method: 'POST', body: JSON.stringify(payload) });
-            alert("Félicitations ! Votre livre est en ligne.");
-            showView('home');
-        }
-
-        async function fixAI() {
-            const btn = document.getElementById('ai-btn');
-            const text = document.getElementById('w-content').value;
-            if(!text) return;
-            btn.innerText = "Correction...";
-            const r = await fetch(`${API}?action=ai_fix`, {
-                method: 'POST',
-                body: JSON.stringify({text: text})
-            });
-            const data = await r.json();
-            document.getElementById('w-content').value = data.choices[0].message.content;
-            btn.innerText = "✨ Correction IA Groq";
-        }
-
-        // INIT
-        updateNav();
         loadBooks();
     </script>
 </body>

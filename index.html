@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BooksForYou - Partagez vos histoires</title>
-    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -40,25 +39,27 @@
 
     <div id="reader-overlay" class="reader-overlay">
         <header class="reader-header">
-            <div style="display: flex; align-items: center; gap: 20px;">
-                <button onclick="closeReader()" class="btn btn-danger">✕ <span>Quitter</span></button>
-                <h2 id="reader-title" style="font-size: 1.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">Titre du livre</h2>
-            </div>
-            
-            <select id="page-selector" onchange="displayPage(this.value)">
-                </select>
+            <h2 id="reader-title">Titre de l'œuvre</h2>
+            <button onclick="closeReader()" class="btn btn-danger">✕ Fermer</button>
         </header>
 
-        <main class="reader-body">
-            <div id="reader-content" class="page-animate">
-                </div>
-        </main>
+        <div class="reader-container">
+            <aside class="reader-sidebar">
+                <div class="sidebar-label">Onglets du document</div>
+                <div id="tabs-list" class="tabs-list">
+                    </div>
+            </aside>
+
+            <main class="reader-body">
+                <div id="reader-content" class="page-animate">
+                    </div>
+            </main>
+        </div>
     </div>
 
     <script src="app.js"></script>
     <script>
-        // Petite sécurité : si l'utilisateur n'est pas connecté, 
-        // on cache les boutons de profil et on redirige vers le login
+        // Si non connecté, afficher le bouton de Connexion
         if (!USER_ID) {
             document.getElementById('auth-links').innerHTML = `
                 <a href="login.html" class="btn btn-primary">Connexion</a>

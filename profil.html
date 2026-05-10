@@ -12,147 +12,51 @@
         <div class="nav-container container">
             <a href="index.html" class="logo">BooksForYou</a>
             <div class="nav-links">
-                <a href="index.html">Accueil</a>
-                <a href="ecrire.html" class="btn-write">✍️ Écrire</a>
-                <a href="profil.html" class="active">Mon Profil</a>
-                <button onclick="logout()" class="btn-logout">Déconnexion</button>
+                <a href="index.html">🏠 <span>Accueil</span></a>
+                <a href="ecrire.html" class="btn btn-primary" style="color: white !important;">✍️ <span>Écrire</span></a>
+                <a href="profil.html" class="active">👤 <span id="user-name-display">Profil</span></a>
+                <button onclick="logout()" class="btn btn-logout">🚪</button>
             </div>
         </div>
     </nav>
 
-    <main class="container">
-        <div class="profile-header">
-            <div class="pdp-container">
-                <img src="default_pp.png" id="current-pdp" class="pdp-preview" alt="Photo de profil">
-                <label for="pdp-input" class="pdp-upload-btn" title="Changer la photo">📷</label>
-                <input type="file" id="pdp-input" accept="image/*" onchange="previewAndUploadPDP(this)">
-            </div>
-            <div class="profile-info">
-                <h1 id="profile-username">Chargement...</h1>
-                <p id="profile-email" class="text-muted">chargement@email.com</p>
-                <div class="profile-stats">
-                    <span id="book-count">0</span> livres créés
+    <main class="container profile-layout">
+        
+        <aside class="profile-sidebar">
+            <div class="profile-card">
+                <div class="pdp-container" style="margin: 0 auto;">
+                    <img id="current-pdp" class="pdp-preview" src="https://api.craftpick.fr/booksforyou/uploads/default.png" alt="Photo de profil">
+                    <label class="pdp-upload-btn" for="pdp-input">
+                        📷
+                    </label>
+                    <input type="file" id="pdp-input" accept="image/*" style="display: none;" onchange="previewAndUploadPDP(this)">
+                </div>
+
+                <h2 id="profile-username">Pseudo</h2>
+                <p class="text-muted">Écrivain passionné</p>
+
+                <div class="stats-box">
+                    <div class="stat-item">
+                        <span class="stat-val" id="book-count">0</span>
+                        <span class="stat-lbl">Livres</span>
+                    </div>
                 </div>
             </div>
-        </div>
+        </aside>
 
-        <div class="section-title">
-            <h2>Ma Bibliothèque</h2>
-            <p class="text-muted">Gérez vos brouillons et vos publications</p>
-        </div>
+        <section class="profile-main">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h1 style="font-size: 1.8rem; font-weight: 800;">📚 Mes Histoires</h1>
+                <a href="ecrire.html" class="btn btn-primary">➕ Nouveau</a>
+            </div>
 
-        <div id="my-books-list" class="book-management-grid">
-            <div class="loading">Chargement de vos livres...</div>
-        </div>
+            <div id="my-books-list" class="book-management-grid">
+                <p class="text-muted">Chargement de vos œuvres...</p>
+            </div>
+        </section>
+
     </main>
 
     <script src="app.js"></script>
-    <script>
-        // Initialisation de la page
-        document.addEventListener('DOMContentLoaded', () => {
-            if (!USER_ID) {
-                window.location.href = 'login.html';
-                return;
-            }
-
-            // Remplir les infos textuelles
-            document.getElementById('profile-username').innerText = USERNAME;
-            document.getElementById('profile-email').innerText = userData.email || "";
-            
-            // Charger la PDP
-            if (userData.profile_pic) {
-                document.getElementById('current-pdp').src = API + '/' + userData.profile_pic;
-            }
-
-            loadMyBooks();
-        });
-
-        async function loadMyBooks() {
-            const list = document.getElementById('my-books-list');
-            try {
-                const res = await fetch(`${API}/api/books.php?user_id=${USER_ID}&status=all`);
-                const books = await res.json();
-
-                document.getElementById('book-count').innerText = books.length;
-
-                if (books.length === 0) {
-                    list.innerHTML = `<div class="card" style="grid-column: 1/-1; text-align:center;">
-                        <p>Vous n'avez pas encore écrit d'histoires.</p>
-                        <a href="ecrire.html" class="btn btn-primary" style="margin-top:15px">Commencer à écrire</a>
-                    </div>`;
-                    return;
-                }
-
-                list.innerHTML = books.map(b => `
-                    <div class="manage-card card">
-                        <div class="manage-card-content">
-                            <span class="status-badge status-${b.status}">
-                                ${b.status === 'draft' ? 'Brouillon' : 'Publié'}
-                            </span>
-                            <h3>${escapeHtml(b.title)}</h3>
-                            <p class="text-muted small">Modifié le ${new Date(b.created_at).toLocaleDateString()}</p>
-                        </div>
-                        <div class="action-btns">
-                            <a href="ecrire.html?edit=${b.id}" class="btn btn-edit">Modifier</a>
-                            <button onclick="confirmDelete(${b.id})" class="btn btn-delete">Supprimer</button>
-                        </div>
-                    </div>
-                `).join('');
-            } catch (e) {
-                list.innerHTML = "Erreur lors du chargement de la bibliothèque.";
-            }
-        }
-
-        async function confirmDelete(bookId) {
-            if (confirm("Voulez-vous vraiment supprimer ce livre ? Cette action est irréversible.")) {
-                try {
-                    const res = await fetch(`${API}/api/delete_book.php`, {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ book_id: bookId, user_id: USER_ID })
-                    });
-                    const data = await res.json();
-                    if (data.success) {
-                        loadMyBooks(); // Recharger la liste
-                    }
-                } catch (e) {
-                    alert("Erreur lors de la suppression.");
-                }
-            }
-        }
-
-        function previewAndUploadPDP(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = async function(e) {
-                    // Prévisualisation immédiate
-                    document.getElementById('current-pdp').src = e.target.result;
-                    
-                    // Envoi au serveur
-                    try {
-                        const res = await fetch(`${API}/auth/update_pdp.php`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                user_id: USER_ID,
-                                image: e.target.result
-                            })
-                        });
-                        const data = await res.json();
-                        if (data.success) {
-                            // Mettre à jour les données locales
-                            userData.profile_pic = data.new_url;
-                            localStorage.setItem('user', JSON.stringify(userData));
-                        } else {
-                            alert("Erreur: " + data.error);
-                        }
-                    } catch (err) {
-                        alert("Impossible d'envoyer l'image.");
-                    }
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-    </script>
 </body>
 </html>

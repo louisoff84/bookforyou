@@ -11,7 +11,7 @@ const USERNAME = userData ? userData.username : "Invité";
  * INITIALISATION AU CHARGEMENT
  */
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("BooksForYou prêt. Utilisateur :", USERNAME);
+    console.log("BooksForYou prêt by louisoff84. Utilisateur :", USERNAME);
     
     // Si on est sur l'index, charger les livres
     if (document.getElementById('feed')) {
@@ -67,7 +67,7 @@ async function loadFeed() {
 let bookPages = [];
 async function openReader(bookId, title) {
     try {
-        const res = await fetch(`${API}/api/get_pages.php?book_id=${bookId}`);
+        const res = await fetch(`https://api.craftpick.fr/booksforyou/api/get_pages.php?book_id=${bookId}`);
         bookPages = await res.json();
         
         if (bookPages.length === 0) {

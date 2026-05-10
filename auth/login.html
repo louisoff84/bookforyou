@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion | Book For You</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0b0e14] text-white flex items-center justify-center min-h-screen">
+    <div class="bg-white/5 p-10 rounded-3xl border border-white/10 w-full max-w-md">
+        <h2 class="text-3xl font-bold mb-6 text-center">Connexion</h2>
+        <input id="user" type="text" placeholder="Pseudo" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-4 outline-none">
+        <input id="pass" type="password" placeholder="Mot de passe" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-6 outline-none">
+        <button onclick="login()" class="w-full bg-indigo-600 p-4 rounded-xl font-bold">Entrer</button>
+    </div>
+
+    <script>
+        async function login() {
+            const payload = { username: document.getElementById('user').value, password: document.getElementById('pass').value };
+            const r = await fetch("https://api.craftpick.fr/booksforyou/api.php?action=login", {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+            if(r.ok) {
+                const data = await r.json();
+                localStorage.setItem('user', JSON.stringify(data));
+                window.location.href = "../index.html";
+            } else { alert("Pseudo ou mot de passe incorrect"); }
+        }
+    </script>
+</body>
+</html>

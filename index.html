@@ -3,42 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accueil - BooksForYou</title>
+    <title>BooksForYou - Partagez vos histoires</title>
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="logo">📚 BooksForYou</a>
+        <div class="nav-container container">
+            <a href="index.html" class="logo">BooksForYou</a>
+            
             <div class="nav-links">
-                <a href="index.html" class="active">Accueil</a>
-                <a href="ecrire.html" class="btn-write">✍️ Écrire</a>
-                <a href="mes-livres.html">Mes Livres</a>
-                <a href="profil.html" id="nav-username">Profil</a>
-                <button onclick="logout()" class="btn-logout">Déconnexion</button>
+                <a href="index.html" class="active">🏠 <span>Accueil</span></a>
+                <a href="ecrire.html" class="btn btn-primary" style="color: white !important;">✍️ <span>Écrire</span></a>
+                
+                <div id="auth-links" style="display: flex; gap: 15px; align-items: center;">
+                    <a href="profil.html">👤 <span id="user-name-display">Profil</span></a>
+                    <button onclick="logout()" class="btn btn-logout">🚪</button>
+                </div>
             </div>
         </div>
     </nav>
 
-    <header class="hero">
-        <h1>Découvrez des histoires uniques</h1>
-        <p>La plateforme où les auteurs et les lecteurs se rencontrent.</p>
+    <header class="container" style="margin-top: 40px; text-align: center;">
+        <h1 style="font-size: 2.5rem; margin-bottom: 10px;">Découvrez des histoires uniques</h1>
+        <p class="text-muted" style="font-size: 1.1rem;">Lisez, écrivez et partagez vos aventures avec la communauté.</p>
     </header>
 
     <main class="container">
-        <section class="feed-header">
-            <h2>Dernières publications</h2>
-            <div class="filters">
-                <span>Plus récents</span>
-            </div>
-        </section>
-
         <div id="feed" class="book-grid">
-            <div class="loading">Chargement des histoires...</div>
+            <div class="loading" style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                <p>Chargement des dernières histoires...</p>
+            </div>
         </div>
     </main>
 
+    <div id="reader-overlay" class="reader-overlay">
+        <header class="reader-header">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <button onclick="closeReader()" class="btn btn-danger">✕ <span>Quitter</span></button>
+                <h2 id="reader-title" style="font-size: 1.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">Titre du livre</h2>
+            </div>
+            
+            <select id="page-selector" onchange="displayPage(this.value)">
+                </select>
+        </header>
+
+        <main class="reader-body">
+            <div id="reader-content" class="page-animate">
+                </div>
+        </main>
+    </div>
+
     <script src="app.js"></script>
+    <script>
+        // Petite sécurité : si l'utilisateur n'est pas connecté, 
+        // on cache les boutons de profil et on redirige vers le login
+        if (!USER_ID) {
+            document.getElementById('auth-links').innerHTML = `
+                <a href="login.html" class="btn btn-primary">Connexion</a>
+            `;
+        }
+    </script>
 </body>
 </html>

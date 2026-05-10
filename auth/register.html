@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>S'inscrire | Book For You</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0b0e14] text-white flex items-center justify-center min-h-screen">
+    <div class="bg-white/5 p-10 rounded-3xl border border-white/10 w-full max-w-md">
+        <h2 class="text-3xl font-bold mb-6 text-center">Créer un compte</h2>
+        <input id="user" type="text" placeholder="Pseudo" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-4 outline-none">
+        <input id="pass" type="password" placeholder="Mot de passe" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-6 outline-none">
+        <button onclick="register()" class="w-full bg-indigo-600 p-4 rounded-xl font-bold">S'inscrire</button>
+        <p class="mt-4 text-center text-sm text-gray-400">Déjà un compte ? <a href="login.html" class="text-indigo-400">Se connecter</a></p>
+    </div>
+
+    <script>
+        async function register() {
+            const payload = { username: document.getElementById('user').value, password: document.getElementById('pass').value };
+            await fetch("https://api.craftpick.fr/booksforyou/api.php?action=register", {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+            alert("Compte créé ! Connectez-vous.");
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+</html>
